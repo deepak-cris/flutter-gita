@@ -14,6 +14,7 @@ class ChapterListScreen extends material.StatefulWidget {
 class _ChapterListScreenState extends material.State<ChapterListScreen> {
   List<Chapter> chapters = [];
   bool isLoading = true;
+  bool isLoadingCommitTest = true;
   String? errorMessage;
 
   @override
