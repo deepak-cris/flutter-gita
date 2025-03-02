@@ -1,0 +1,38 @@
+name: bhagavad_gita_simplified
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.1
+  dio: ^5.4.0
+  shared_preferences: ^2.2.2
+  cached_network_image: ^3.3.1
+  google_fonts: ^6.1.0
+  path: ^1.8.0
+  audioplayers: ^6.2.0  # For playing music
+  sqflite: ^2.0.0+3     # For storing notes locally
+  path_provider: ^2.0.0 # To access file system paths for SQLite
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/data/
+    - assets/audio/
+  fonts:
+    - family: SanskritFont
+      fonts:
+        - asset: assets/fonts/SanskritFont.ttf
