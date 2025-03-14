@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 class VerseListScreen extends StatefulWidget {
   final int chapterNumber;
 
-  VerseListScreen({required this.chapterNumber});
+  const VerseListScreen({super.key, required this.chapterNumber});
 
   @override
   _VerseListScreenState createState() => _VerseListScreenState();

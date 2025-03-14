@@ -1,67 +1,58 @@
-import 'package:flutter/material.dart' as material;
-import 'package:bhagavad_gita_simplified/screens/chapter_list_screen.dart'; // Adjust path to your home screen
+import 'package:bhagavad_gita_simplified/screens/home_screen.dart';
+import 'package:flutter/material.dart'; // Adjust path to your home screen
 
-class SplashScreen extends material.StatefulWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends material.State<SplashScreen>
-    with material.SingleTickerProviderStateMixin {
-  late material.AnimationController _controller;
-  late material.Animation<double> _fadeAnimation;
-  late material.Animation<double> _scaleAnimation;
-  late material.Animation<material.Offset> _slideAnimation;
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+  late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
 
     // Initialize AnimationController with Duration from dart:core
-    _controller = material.AnimationController(
-      duration: const Duration(seconds: 3), // Corrected: No material. prefix
+    _controller = AnimationController(
+      duration: const Duration(seconds: 3), // Corrected: No  prefix
       vsync: this,
     );
 
     // Fade Animation for logo
-    _fadeAnimation = material.Tween<double>(begin: 0.0, end: 1.0).animate(
-      material.CurvedAnimation(
-        parent: _controller,
-        curve: material.Curves.easeIn,
-      ),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
     // Scale Animation for pulsing effect
-    _scaleAnimation = material.Tween<double>(begin: 0.8, end: 1.0).animate(
-      material.CurvedAnimation(
-        parent: _controller,
-        curve: material.Curves.easeInOut,
-      ),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     // Slide Animation for text
-    _slideAnimation = material.Tween<material.Offset>(
-      begin: const material.Offset(0.0, 1.0),
-      end: material.Offset.zero,
-    ).animate(
-      material.CurvedAnimation(
-        parent: _controller,
-        curve: material.Curves.easeOut,
-      ),
-    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 1.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     // Start animation
     _controller.forward();
 
     // Navigate to home screen after animation
     Future.delayed(const Duration(seconds: 4), () {
-      // Corrected: No material. prefix
+      // Corrected: No  prefix
       if (mounted) {
-        material.Navigator.pushReplacement(
+        Navigator.pushReplacement(
           context,
-          material.MaterialPageRoute(builder: (context) => ChapterListScreen()),
+          MaterialPageRoute(builder: (context) => HomeScreen()),
         );
       }
     });
@@ -74,43 +65,43 @@ class _SplashScreenState extends material.State<SplashScreen>
   }
 
   @override
-  material.Widget build(material.BuildContext context) {
-    return material.Scaffold(
-      body: material.Container(
-        decoration: material.BoxDecoration(
-          gradient: material.LinearGradient(
-            begin: material.Alignment.topCenter,
-            end: material.Alignment.bottomCenter,
-            colors: [material.Colors.orange[50]!, material.Colors.white],
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.orange[50]!, Colors.white],
           ),
         ),
-        child: material.Center(
-          child: material.Column(
-            mainAxisAlignment: material.MainAxisAlignment.center,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              material.FadeTransition(
+              FadeTransition(
                 opacity: _fadeAnimation,
-                child: material.ScaleTransition(
+                child: ScaleTransition(
                   scale: _scaleAnimation,
-                  child: material.Image.asset(
+                  child: Image.asset(
                     'assets/images/app_logo.png', // Replace with your logo
                     width: 150,
                     height: 150,
                     errorBuilder: (context, error, stackTrace) {
-                      return material.Container(
+                      return Container(
                         width: 150,
                         height: 150,
-                        decoration: material.BoxDecoration(
-                          shape: material.BoxShape.circle,
-                          color: material.Colors.orange[100],
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.orange[100],
                         ),
-                        child: material.Center(
-                          child: material.Text(
+                        child: Center(
+                          child: Text(
                             'BG',
-                            style: material.TextStyle(
+                            style: TextStyle(
                               fontSize: 60,
-                              fontWeight: material.FontWeight.bold,
-                              color: material.Colors.orange[800],
+                              fontWeight: FontWeight.bold,
+                              color: Colors.orange[800],
                             ),
                           ),
                         ),
@@ -119,34 +110,34 @@ class _SplashScreenState extends material.State<SplashScreen>
                   ),
                 ),
               ),
-              const material.SizedBox(height: 20),
-              material.SlideTransition(
+              const SizedBox(height: 20),
+              SlideTransition(
                 position: _slideAnimation,
-                child: material.Text(
+                child: Text(
                   'Bhagavad Gita Simplified',
-                  style: material.TextStyle(
+                  style: TextStyle(
                     fontSize: 28,
-                    fontWeight: material.FontWeight.bold,
-                    color: material.Colors.orange[900],
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange[900],
                     shadows: [
-                      material.Shadow(
-                        color: material.Colors.orange[300]!,
+                      Shadow(
+                        color: Colors.orange[300]!,
                         blurRadius: 10,
-                        offset: const material.Offset(0, 2),
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
                 ),
               ),
-              const material.SizedBox(height: 10),
-              material.SlideTransition(
+              const SizedBox(height: 10),
+              SlideTransition(
                 position: _slideAnimation,
-                child: material.Text(
+                child: Text(
                   'A Journey to Inner Peace',
-                  style: material.TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
-                    color: material.Colors.grey[800],
-                    fontStyle: material.FontStyle.italic,
+                    color: Colors.grey[800],
+                    fontStyle: FontStyle.italic,
                   ),
                 ),
               ),

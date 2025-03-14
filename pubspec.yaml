@@ -1,29 +1,29 @@
 name: bhagavad_gita_simplified
 description: "A new Flutter project."
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.7.0
+  sdk: '>=3.7.0 <3.8.0'
 
 dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  provider: ^6.1.1
-  dio: ^5.4.0
-  shared_preferences: ^2.2.2
-  cached_network_image: ^3.3.1
-  google_fonts: ^6.1.0
-  path: ^1.8.0
-  audioplayers: ^6.2.0  # For playing music
-  sqflite: ^2.0.0+3     # For storing notes locally
-  path_provider: ^2.0.0 # To access file system paths for SQLite
+  provider: ^6.1.2
+  dio: ^5.8.0+1
+  shared_preferences: ^2.5.2
+  cached_network_image: ^3.4.1
+  google_fonts: ^6.2.1
+  path: ^1.9.1
+  audioplayers: ^6.4.0
+  sqflite: ^2.4.2
+  path_provider: ^2.1.5
+  shimmer: ^3.0.0  # Use the latest version from pub.dev
 
 dev_dependencies:
   flutter_test:
-    sdk: flutter
+    sdk: flutter  # Corrected entry
   flutter_lints: ^5.0.0
 
 flutter:

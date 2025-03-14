@@ -1,20 +1,19 @@
 import 'dart:convert';
 import 'package:bhagavad_gita_simplified/models/chapter.dart';
 import 'package:bhagavad_gita_simplified/screens/verse_list_screen.dart';
-import 'package:flutter/material.dart' as material;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as services;
 
-class ChapterListScreen extends material.StatefulWidget {
+class ChapterListScreen extends StatefulWidget {
   const ChapterListScreen({super.key});
 
   @override
   _ChapterListScreenState createState() => _ChapterListScreenState();
 }
 
-class _ChapterListScreenState extends material.State<ChapterListScreen> {
+class _ChapterListScreenState extends State<ChapterListScreen> {
   List<Chapter> chapters = [];
   bool isLoading = true;
-  bool isLoadingCommitTest = true;
   String? errorMessage;
 
   @override
@@ -42,57 +41,49 @@ class _ChapterListScreenState extends material.State<ChapterListScreen> {
   }
 
   @override
-  material.Widget build(material.BuildContext context) {
-    return material.Scaffold(
-      appBar: material.AppBar(
-        title: const material.Text('Bhagavad Gita'),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Bhagavad Gita'),
         elevation: 2,
-        backgroundColor: material.Colors.orange[800],
-        foregroundColor: material.Colors.white,
+        backgroundColor: Colors.orange[800],
+        foregroundColor: Colors.white,
       ),
-      body: material.Container(
-        decoration: material.BoxDecoration(
-          gradient: material.LinearGradient(
-            begin: material.Alignment.topCenter,
-            end: material.Alignment.bottomCenter,
-            colors: [material.Colors.orange[50]!, material.Colors.white],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.orange[50]!, Colors.white],
           ),
         ),
         child:
             isLoading
-                ? const material.Center(
-                  child: material.CircularProgressIndicator(
-                    color: material.Colors.orange,
-                  ),
+                ? const Center(
+                  child: CircularProgressIndicator(color: Colors.orange),
                 )
                 : errorMessage != null
-                ? material.Center(
-                  child: material.Text(
+                ? Center(
+                  child: Text(
                     errorMessage!,
-                    style: const material.TextStyle(color: material.Colors.red),
+                    style: const TextStyle(color: Colors.red),
                   ),
                 )
-                : material.GridView.builder(
-                  padding: const material.EdgeInsets.all(16),
-                  gridDelegate:
-                      const material.SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 1, // 1 chapter per row
-                        // No childAspectRatio for dynamic rectangular height
-                        mainAxisSpacing: 8, // Space between rows
-                      ),
+                : ListView.builder(
+                  padding: const EdgeInsets.all(16),
                   itemCount: chapters.length,
                   itemBuilder: (context, index) {
                     final chapter = chapters[index];
-                    return material.Card(
+                    return Card(
                       elevation: 4,
-                      shape: material.RoundedRectangleBorder(
-                        borderRadius: material.BorderRadius.circular(12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: material.InkWell(
+                      child: InkWell(
                         onTap: () {
-                          material.Navigator.push(
+                          Navigator.push(
                             context,
-                            material.MaterialPageRoute(
+                            MaterialPageRoute(
                               builder:
                                   (context) => VerseListScreen(
                                     chapterNumber: chapter.chapterNumber,
@@ -100,81 +91,73 @@ class _ChapterListScreenState extends material.State<ChapterListScreen> {
                             ),
                           );
                         },
-                        child: material.Padding(
-                          padding: const material.EdgeInsets.all(16),
-                          child: material.IntrinsicHeight(
-                            child: material.Row(
-                              crossAxisAlignment:
-                                  material.CrossAxisAlignment.center,
-                              children: [
-                                material.Container(
-                                  width: 60,
-                                  height: 60,
-                                  decoration: material.BoxDecoration(
-                                    color: material.Colors.orange[100],
-                                    borderRadius: material
-                                        .BorderRadius.circular(30),
-                                  ),
-                                  child: material.Center(
-                                    child: material.Text(
-                                      '${chapter.chapterNumber}',
-                                      style: material.TextStyle(
-                                        color: material.Colors.orange[800],
-                                        fontWeight: material.FontWeight.bold,
-                                        fontSize: 24,
-                                      ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: Colors.orange[100],
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '${chapter.chapterNumber}',
+                                    style: TextStyle(
+                                      color: Colors.orange[800],
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 24,
                                     ),
                                   ),
                                 ),
-                                const material.SizedBox(width: 16),
-                                material.Expanded(
-                                  child: material.Column(
-                                    crossAxisAlignment:
-                                        material.CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        material.MainAxisAlignment.center,
-                                    children: [
-                                      material.Text(
-                                        chapter.name,
-                                        style: material.Theme.of(
-                                          context,
-                                        ).textTheme.titleLarge!.copyWith(
-                                          color: material.Colors.orange[900],
-                                          fontWeight: material.FontWeight.bold,
-                                        ),
-                                        maxLines: 1,
-                                        overflow:
-                                            material.TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      chapter.name,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleLarge!.copyWith(
+                                        color: Colors.orange[900],
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      const material.SizedBox(height: 8),
-                                      material.Text(
-                                        chapter.nameMeaning,
-                                        style: material.TextStyle(
-                                          color: material.Colors.grey[600],
-                                          fontSize: 14,
-                                        ),
-                                        overflow:
-                                            material.TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      chapter.nameMeaning,
+                                      style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 14,
                                       ),
-                                      const material.SizedBox(height: 8),
-                                      material.Text(
-                                        'Verses: ${chapter.versesCount}',
-                                        style: material.TextStyle(
-                                          color: material.Colors.grey[800],
-                                          fontSize: 12,
-                                          fontStyle: material.FontStyle.italic,
-                                        ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Verses: ${chapter.versesCount}',
+                                      style: TextStyle(
+                                        color: Colors.grey[800],
+                                        fontSize: 12,
+                                        fontStyle: FontStyle.italic,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                                material.Icon(
-                                  material.Icons.arrow_forward_ios,
-                                  color: material.Colors.orange[800],
-                                  size: 18,
-                                ),
-                              ],
-                            ),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.orange[800],
+                                size: 18,
+                              ),
+                            ],
                           ),
                         ),
                       ),

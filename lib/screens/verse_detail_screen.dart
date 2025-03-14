@@ -13,7 +13,7 @@ import 'package:path/path.dart';
 class VerseDetailsScreen extends StatefulWidget {
   final Verse verse;
 
-  const VerseDetailsScreen({required this.verse});
+  const VerseDetailsScreen({super.key, required this.verse});
 
   @override
   _VerseDetailsScreenState createState() => _VerseDetailsScreenState();
@@ -24,9 +24,9 @@ class _VerseDetailsScreenState extends State<VerseDetailsScreen> {
   List<Commentary> commentaries = [];
   List<Author> authors = [];
   List<Language> languages = [];
-  String? selectedTranslationAuthor = 'all';
-  String? selectedCommentaryAuthor = 'all';
-  String? selectedCommentaryLanguage = 'all';
+  String? selectedTranslationAuthor; // Initially null
+  String? selectedCommentaryAuthor; // Initially null
+  String? selectedCommentaryLanguage; // Initially null
   bool isLoading = true;
   String? errorMessage;
   final AudioPlayer audioPlayer = AudioPlayer();
@@ -98,7 +98,7 @@ class _VerseDetailsScreenState extends State<VerseDetailsScreen> {
       print('Database not initialized yet');
       return;
     }
-    final db = await database!;
+    final db = database!;
     final maps = await db.query(
       'notes',
       columns: ['noteText'],
@@ -120,7 +120,7 @@ class _VerseDetailsScreenState extends State<VerseDetailsScreen> {
     }
     final noteText = noteController.text.trim();
     if (noteText.isNotEmpty) {
-      final db = await database!;
+      final db = database!;
       await db.insert('notes', {
         'verseId': widget.verse.id,
         'noteText': noteText,
@@ -133,19 +133,15 @@ class _VerseDetailsScreenState extends State<VerseDetailsScreen> {
 
   Future<void> loadData() async {
     try {
-      final String? transResponse = await rootBundle.loadString(
+      final String transResponse = await rootBundle.loadString(
         'assets/data/translation.json',
       );
-      final String? authResponse = await rootBundle.loadString(
+      final String authResponse = await rootBundle.loadString(
         'assets/data/authors.json',
       );
-      final String? langResponse = await rootBundle.loadString(
+      final String langResponse = await rootBundle.loadString(
         'assets/data/languages.json',
       );
-
-      if (transResponse == null) throw Exception('translation.json not found');
-      if (authResponse == null) throw Exception('authors.json not found');
-      if (langResponse == null) throw Exception('languages.json not found');
 
       final transData = json.decode(transResponse) as List? ?? [];
       final authData = json.decode(authResponse) as List? ?? [];
@@ -168,7 +164,32 @@ class _VerseDetailsScreenState extends State<VerseDetailsScreen> {
         ];
         authors = authData.map((json) => Author.fromJson(json)).toList();
         languages = langData.map((json) => Language.fromJson(json)).toList();
+
+        // Validate selected values after loading data
+        if (selectedTranslationAuthor != null &&
+            !authors.any((a) => a.id.toString() == selectedTranslationAuthor)) {
+          selectedTranslationAuthor = 'all';
+        }
+        if (selectedCommentaryAuthor != null &&
+            !authors.any((a) => a.id.toString() == selectedCommentaryAuthor)) {
+          selectedCommentaryAuthor = 'all';
+        }
+        if (selectedCommentaryLanguage != null &&
+            !languages.any(
+              (l) => (l.code ?? 'unknown') == selectedCommentaryLanguage,
+            )) {
+          selectedCommentaryLanguage = 'all';
+        }
+
         isLoading = false;
+
+        // Debug prints
+        print(
+          'Authors: ${authors.map((a) => 'id: ${a.id}, name: ${a.name}').toList()}',
+        );
+        print(
+          'Languages: ${languages.map((l) => 'code: ${l.code}, name: ${l.name}').toList()}',
+        );
       });
     } catch (e) {
       setState(() {
@@ -191,24 +212,24 @@ class _VerseDetailsScreenState extends State<VerseDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     List<Translation> filteredTranslations =
-        selectedTranslationAuthor == 'all'
+        selectedTranslationAuthor == null || selectedTranslationAuthor == 'all'
             ? translations
             : translations
                 .where(
-                  (t) =>
-                      t.authorId.toString() ==
-                      (selectedTranslationAuthor ?? ''),
+                  (t) => t.authorId.toString() == selectedTranslationAuthor,
                 )
                 .toList();
 
     List<Commentary> filteredCommentaries =
         commentaries.where((c) {
           final authorMatch =
+              selectedCommentaryAuthor == null ||
               selectedCommentaryAuthor == 'all' ||
-              c.authorId.toString() == (selectedCommentaryAuthor ?? '');
+              c.authorId.toString() == selectedCommentaryAuthor;
           final langMatch =
+              selectedCommentaryLanguage == null ||
               selectedCommentaryLanguage == 'all' ||
-              c.language == (selectedCommentaryLanguage ?? '');
+              c.language == selectedCommentaryLanguage;
           return authorMatch && langMatch;
         }).toList();
 
@@ -311,6 +332,22 @@ class _VerseDetailsScreenState extends State<VerseDetailsScreen> {
   }
 
   Widget _buildTranslationsSection(List<Translation> filteredTranslations) {
+    final items = [
+      const DropdownMenuItem(value: 'all', child: Text('All Authors')),
+      if (authors.isNotEmpty)
+        ...authors
+            .map(
+              (a) => DropdownMenuItem(
+                value: a.id.toString(),
+                child: Text(a.name ?? 'Unknown'),
+              ),
+            )
+            .toSet(), // Ensure uniqueness
+    ];
+    print(
+      'Translation Dropdown - Value: ${selectedTranslationAuthor ?? 'all'}, Items: ${items.map((i) => i.value).toList()}',
+    );
+
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -329,21 +366,10 @@ class _VerseDetailsScreenState extends State<VerseDetailsScreen> {
             ),
             const SizedBox(height: 8),
             DropdownButton<String>(
-              value: selectedTranslationAuthor,
+              value: selectedTranslationAuthor ?? 'all',
               onChanged:
                   (value) => setState(() => selectedTranslationAuthor = value),
-              items: [
-                const DropdownMenuItem(
-                  value: 'all',
-                  child: Text('All Authors'),
-                ),
-                ...authors.map(
-                  (a) => DropdownMenuItem(
-                    value: a.id.toString(),
-                    child: Text(a.name ?? 'Unknown'),
-                  ),
-                ),
-              ],
+              items: items,
               isExpanded: true,
               style: TextStyle(color: Colors.grey[800]),
               dropdownColor: Colors.orange[50],
@@ -365,6 +391,40 @@ class _VerseDetailsScreenState extends State<VerseDetailsScreen> {
   }
 
   Widget _buildCommentariesSection(List<Commentary> filteredCommentaries) {
+    final authorItems = [
+      const DropdownMenuItem(value: 'all', child: Text('All Authors')),
+      if (authors.isNotEmpty)
+        ...authors
+            .map(
+              (a) => DropdownMenuItem(
+                value: a.id.toString(),
+                child: Text(a.name ?? 'Unknown'),
+              ),
+            )
+            .toSet(), // Ensure uniqueness
+    ];
+    final languageItems = [
+      const DropdownMenuItem(value: 'all', child: Text('All Languages')),
+      if (languages.isNotEmpty)
+        ...languages
+            .map(
+              (l) => DropdownMenuItem(
+                value:
+                    l.code ??
+                    'unknown_${l.name ?? 'unnamed'}', // Unique fallback
+                child: Text(l.name ?? 'Unknown'),
+              ),
+            )
+            .toSet(), // Ensure uniqueness
+    ];
+
+    print(
+      'Commentary Author Dropdown - Value: ${selectedCommentaryAuthor ?? 'all'}, Items: ${authorItems.map((i) => i.value).toList()}',
+    );
+    print(
+      'Commentary Language Dropdown - Value: ${selectedCommentaryLanguage ?? 'all'}, Items: ${languageItems.map((i) => i.value).toList()}',
+    );
+
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -386,22 +446,11 @@ class _VerseDetailsScreenState extends State<VerseDetailsScreen> {
               children: [
                 Expanded(
                   child: DropdownButton<String>(
-                    value: selectedCommentaryAuthor,
+                    value: selectedCommentaryAuthor ?? 'all',
                     onChanged:
                         (value) =>
                             setState(() => selectedCommentaryAuthor = value),
-                    items: [
-                      const DropdownMenuItem(
-                        value: 'all',
-                        child: Text('All Authors'),
-                      ),
-                      ...authors.map(
-                        (a) => DropdownMenuItem(
-                          value: a.id.toString(),
-                          child: Text(a.name ?? 'Unknown'),
-                        ),
-                      ),
-                    ],
+                    items: authorItems,
                     isExpanded: true,
                     style: TextStyle(color: Colors.grey[800]),
                     dropdownColor: Colors.orange[50],
@@ -410,22 +459,11 @@ class _VerseDetailsScreenState extends State<VerseDetailsScreen> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: DropdownButton<String>(
-                    value: selectedCommentaryLanguage,
+                    value: selectedCommentaryLanguage ?? 'all',
                     onChanged:
                         (value) =>
                             setState(() => selectedCommentaryLanguage = value),
-                    items: [
-                      const DropdownMenuItem(
-                        value: 'all',
-                        child: Text('All Languages'),
-                      ),
-                      ...languages.map(
-                        (l) => DropdownMenuItem(
-                          value: l.code ?? '',
-                          child: Text(l.name ?? 'Unknown'),
-                        ),
-                      ),
-                    ],
+                    items: languageItems,
                     isExpanded: true,
                     style: TextStyle(color: Colors.grey[800]),
                     dropdownColor: Colors.orange[50],
