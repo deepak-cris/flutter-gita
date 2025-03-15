@@ -21,6 +21,7 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {
       messages.add({"role": "user", "content": text});
       isLoading = true;
+      _controller.clear(); // Clear input text immediately after sending
     });
     _scrollToBottom();
 
@@ -34,7 +35,7 @@ class _ChatScreenState extends State<ChatScreen> {
       {
         "role": "system",
         "content":
-            "You are Krishna from the Bhagavad Gita. Provide wise and insightful answers from Bhagavad Gita books. Also give reference to Bhagavad Gita verse in your answer if required.",
+            "You are Krishna, the divine teacher and charioteer from the Bhagavad Gita. Respond with wisdom, compassion, and clarity, drawing directly from the teachings of the Bhagavad Gita. Provide deep, insightful answers that reflect my eternal guidance to Arjuna, tailored to the user's question. When relevant, include a specific verse reference (e.g., 'Bhagavad Gita Chapter 2, Verse 47') to ground your response in scripture. Keep answers concise yet profound, avoiding unnecessary elaboration, and use a calm, authoritative tone that inspires reflection and understanding.you ask his or her name in initial part of chat and use it in later response.don't do namaste or namaste smily in end  because you are the supreme personality.",
       },
       ...messages,
     ];
@@ -117,8 +118,6 @@ class _ChatScreenState extends State<ChatScreen> {
       });
       _scrollToBottom();
     }
-
-    _controller.clear();
   }
 
   void _scrollToBottom() {
@@ -164,9 +163,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Shimmer.fromColors(
-                          baseColor: Colors.orange[100]!,
+                          baseColor: Colors.orange[200]!,
                           highlightColor: Colors.orange[50]!,
-                          period: const Duration(milliseconds: 1000),
+                          direction: ShimmerDirection.ltr,
+                          period: const Duration(milliseconds: 1200),
                           child: Card(
                             elevation: 4,
                             shape: RoundedRectangleBorder(
@@ -179,14 +179,20 @@ class _ChatScreenState extends State<ChatScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
-                                    width: 150,
-                                    height: 10,
+                                    width: 120,
+                                    height: 8,
                                     color: Colors.white,
                                   ),
-                                  const SizedBox(height: 5),
+                                  const SizedBox(height: 6),
+                                  Container(
+                                    width: 80,
+                                    height: 8,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(height: 6),
                                   Container(
                                     width: 100,
-                                    height: 10,
+                                    height: 8,
                                     color: Colors.white,
                                   ),
                                 ],
