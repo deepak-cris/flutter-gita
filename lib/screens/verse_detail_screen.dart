@@ -16,10 +16,10 @@ class VerseDetailsScreen extends StatefulWidget {
   const VerseDetailsScreen({super.key, required this.verse});
 
   @override
-  _VerseDetailsScreenState createState() => _VerseDetailsScreenState();
+  VerseDetailsScreenState createState() => VerseDetailsScreenState();
 }
 
-class _VerseDetailsScreenState extends State<VerseDetailsScreen> {
+class VerseDetailsScreenState extends State<VerseDetailsScreen> {
   List<Translation> translations = [];
   List<Commentary> commentaries = [];
   List<Author> authors = [];

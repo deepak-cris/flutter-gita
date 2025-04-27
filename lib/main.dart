@@ -1,6 +1,5 @@
 import 'package:bhagavad_gita_simplified/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:bhagavad_gita_simplified/screens/home_screen.dart'; // Import HomeScreen
 
 void main() {
   runApp(const MyApp());

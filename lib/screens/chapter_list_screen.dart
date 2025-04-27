@@ -8,10 +8,10 @@ class ChapterListScreen extends StatefulWidget {
   const ChapterListScreen({super.key});
 
   @override
-  _ChapterListScreenState createState() => _ChapterListScreenState();
+  ChapterListScreenState createState() => ChapterListScreenState();
 }
 
-class _ChapterListScreenState extends State<ChapterListScreen> {
+class ChapterListScreenState extends State<ChapterListScreen> {
   List<Chapter> chapters = [];
   bool isLoading = true;
   String? errorMessage;

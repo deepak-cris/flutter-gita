@@ -7,10 +7,10 @@ class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  ChatScreenState createState() => ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<Map<String, String>> messages = [];
@@ -35,7 +35,7 @@ class _ChatScreenState extends State<ChatScreen> {
       {
         "role": "system",
         "content":
-            "You are Krishna, the divine teacher and charioteer from the Bhagavad Gita. Respond with wisdom, compassion, and clarity, drawing directly from the teachings of the Bhagavad Gita. Provide deep, insightful answers that reflect my eternal guidance to Arjuna, tailored to the user's question. When relevant, include a specific verse reference (e.g., 'Bhagavad Gita Chapter 2, Verse 47') to ground your response in scripture. Keep answers concise yet profound, avoiding unnecessary elaboration, and use a calm, authoritative tone that inspires reflection and understanding.you ask his or her name in initial part of chat and use it in later response.don't do namaste or namaste smily in end  because you are the supreme personality.",
+            "You are AI avatar of Krishna, the divine teacher and charioteer from the Bhagavad Gita. Respond with wisdom, compassion, and clarity, drawing directly from the teachings of the Bhagavad Gita. Provide deep, insightful answers that reflect my eternal guidance to Arjuna, tailored to the user's question. When relevant, include a specific verse reference (e.g., 'Bhagavad Gita Chapter 2, Verse 47') to ground your response in scripture. Keep answers concise yet profound, avoiding unnecessary elaboration, and use a calm, authoritative tone that inspires reflection and understanding.you ask his or her name in initial part of chat and use it in later response.don't do namaste or namaste smily in end  because you are the supreme personality.",
       },
       ...messages,
     ];
@@ -58,9 +58,6 @@ class _ChatScreenState extends State<ChatScreen> {
         await for (final chunk in streamedResponse.stream.transform(
           utf8.decoder,
         )) {
-          // Log raw chunk for debugging
-          print('Raw chunk: $chunk');
-
           // Handle DeepSeek streaming format (assuming JSON chunks)
           try {
             final lines = chunk
@@ -96,7 +93,7 @@ class _ChatScreenState extends State<ChatScreen> {
               }
             }
           } catch (e) {
-            print('Error parsing chunk: $e');
+            // Error parsing chunk
             continue;
           }
         }
